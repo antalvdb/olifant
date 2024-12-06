@@ -1,6 +1,6 @@
 # Memory-based language modeling
 
-This repository contains all necessary code to train and run memory-based LLMs. 
+This repository contains instructions and code to install, train and run memory-based LLMs. 
 
 Looking for an LLM that is relatively eco-friendly? MBLMs rely on CPU computing and (lots of) RAM. No GPUs or TPUs required.
 Training MBLMs is costly in terms of RAM, but not in terms of time or computing resources.
@@ -65,3 +65,11 @@ Simple GPT-style text completion can be invoked by issuing
 ``python3 timbl-llm.py``
 
 The code will be updated to accept command-line parameters. Right now, the ibase file needs to be edited inside `timbl-llm.py`. 
+
+### Credits
+
+TiMBL was created 25 years ago by an incredible team that was once the Induction of Linguistic Knowledge group at 
+Tilburg University, the Netherlands; members moved to the Computational Linguistics, Psycholinguistics and Sociolinguistics
+group at Antwerp University, Belgium; the Centre for Language and Speech Technology at Radboud University, Nijmegen, 
+the Netherlands. Core members and developers of TiMBL were Walter Daelemans, Antal van den Bosch Jakub Zavrel, Peter Berck, Ko van der Sloot,
+Maarten van Gompel, and many more people credited more fully in the TiMBL reference guide.
