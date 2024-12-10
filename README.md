@@ -2,9 +2,10 @@
 
 This repository contains instructions and code to install, train and run memory-based LLMs. 
 
-Looking for an LLM that is relatively eco-friendly? MBLMs rely on CPU computing and (lots of) RAM. No GPUs or TPUs required.
+Looking for an LLM that is relatively eco-friendly? MBLMs rely on CPU computing and (possibly lots of) RAM. No GPUs or TPUs required.
 Training MBLMs is costly in terms of RAM, but not in terms of time or computing resources.
-Running an MBLM in GPT-style mode also costs RAM, but still relies on CPUs and is reasonably fast as well.
+Running an MBLM in GPT-style mode also costs RAM, but still relies on CPUs and is reasonably fast as well, depending on the selected
+approximation of k-nearest neighbor classification.
 
 
 ## Installation
@@ -18,7 +19,7 @@ On macOS with brew, invoke
 
 ``brew install timbl``
 
-Next, install its associated python bindings, [python3-timbl](https://github.com/proycon/python-timbl) (currently this only works for Ubuntu/Debian Linux for now):
+Next, install its associated python bindings, [python3-timbl](https://github.com/proycon/python-timbl) (currently this only works for Ubuntu/Debian Linux):
 
 ``% pip install python3-timbl``
 
