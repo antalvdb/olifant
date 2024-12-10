@@ -50,7 +50,7 @@ that you will need for your favorite LLM inference steps.
 
 ### Fine-tuning
 
-MBLMs are natural incremental learners, so any learned model can be complemented by additional learning from any new training set, creating a new `ibase` model. 
+MBLMs are natural incremental learners, so any learned model can be complemented by additional fine-tuning from any new training set, creating a new `ibase` model. 
 This requires a TiMBL invocation similar to the training command; it now includes a previously generated `ibase` model file as starting point. Assuming you
 have tokenized and windowed a new training set `finetune_tok`:
 
@@ -74,3 +74,7 @@ Tilburg University, the Netherlands; members moved to the Computational Linguist
 group at Antwerp University, Belgium, and the Centre for Language and Speech Technology at Radboud University, Nijmegen, 
 the Netherlands. Core developer of TiMBL is Ko van der Sloot. Other contributors were Walter Daelemans, Antal van den Bosch, Jakub Zavrel, Peter Berck,
 Maarten van Gompel, and many more people credited more fully in the TiMBL reference guide.
+
+MBLM is a re-implementation of WOPR, a C++ version of a TiMBL-based word predictor developed by Peter Berck,
+funded under the NWO Vici project "Memory Models of Language" (2006-2011) awarded to
+Antal van den Bosch.
