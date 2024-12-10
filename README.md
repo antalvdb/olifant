@@ -27,7 +27,7 @@ Next, install its associated python bindings, [python3-timbl](https://github.com
 
 ### Tokenization
 
-Training MBLM assumes that you have a tokenizer and a raw-text training set. The tokenizer will have to be the same tokenizer used for testing.
+Training MBLM assumes that you have a tokenizer and a raw-text training set `textfile`. The tokenizer will have to be the same tokenizer used for testing.
 First, the text is tokenized:
 
 ``python3 tok.py textfile``
@@ -69,8 +69,8 @@ The code will be updated to accept command-line parameters. Right now, the ibase
 
 ### Credits
 
-TiMBL was created 25 years ago by an incredible team that was once the Induction of Linguistic Knowledge group at 
+TiMBL was created 25 years ago by a team that was once the Induction of Linguistic Knowledge group at 
 Tilburg University, the Netherlands; members moved to the Computational Linguistics, Psycholinguistics and Sociolinguistics
-group at Antwerp University, Belgium; the Centre for Language and Speech Technology at Radboud University, Nijmegen, 
-the Netherlands. Core members and developers of TiMBL were Walter Daelemans, Antal van den Bosch Jakub Zavrel, Peter Berck, Ko van der Sloot,
+group at Antwerp University, Belgium, and the Centre for Language and Speech Technology at Radboud University, Nijmegen, 
+the Netherlands. Core developer of TiMBL is Ko van der Sloot. Other contributors were Walter Daelemans, Antal van den Bosch, Jakub Zavrel, Peter Berck,
 Maarten van Gompel, and many more people credited more fully in the TiMBL reference guide.
