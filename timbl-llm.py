@@ -26,7 +26,21 @@ def generate_text_from_api(classifier, initial_prompt, max_words=200):
         print("Tokenization failed; 'initial_tokens' is None.")
         initial_tokens = []                
 
-    # Prepare the initial prompt, padded or trimmed to 16 words    
+    # Prepare the initial prompt, padded or trimmed to 16 words
+    padded_instances = []
+
+    # Generate padded instances for next-token predictions
+    for i in range(len(initial_tokens)):
+        # Take the tokens up to the current position and pad them
+        instance = pad_prompt(initial_tokens[:i], max_len=16)
+        padded_instances.append((instance, initial_tokens[i] if i < len(initial_tokens) else '_'))
+        
+    # Add instances to memory
+    for input_instance, next_token in padded_instances:
+        print("memorized: ", input_instance, next_token)
+        classifier.append(input_instance, next_token)
+
+    # Use the final part of the prompt for further generation
     prompt_words = pad_prompt(initial_tokens)
     
     generated_tokens = prompt_words[:]  # Store the full generated text
@@ -36,12 +50,12 @@ def generate_text_from_api(classifier, initial_prompt, max_words=200):
         for _ in range(max_words):
             next_word = None
 
-            print(prompt_words)
             classlabel, distribution, distance = classifier.classify( prompt_words )
 
             # add instance to instance base
             classifier.append(prompt_words, classlabel)
             
+            print(prompt_words)
             print(classlabel)
             print(distribution)
             print(distance)
