@@ -2,24 +2,16 @@
 
 This repository contains instructions and code to install, train and run memory-based LLMs. 
 
-Looking for an LLM that is relatively eco-friendly? MBLMs rely on CPU computing and (possibly lots of) RAM. No GPUs or TPUs required.
+Looking for an LLM that is relatively eco-friendly? MBLMs rely on CPUs. No GPUs or TPUs required.
 Training MBLMs is costly in terms of RAM, but not in terms of time or computing resources.
-Running an MBLM in GPT-style mode also costs RAM, but still relies on CPUs and is reasonably fast as well, depending on the selected
+Running an MBLM in autoregressive GPT-style mode also costs RAM, but still relies on CPUs and is reasonably fast as well, depending on the selected
 approximation of k-nearest neighbor classification.
 
 
 ## Installation
 
-MBLM relies on the TiMBL memory-based classification engine and python3-timbl. To install the engine, [TiMBL](https://github.com/LanguageMachines/timbl/),
-invoke your platform's package manager. On Ubuntu/Debian Linux, do
-
-``apt-get install timbl``
-
-On macOS with brew, invoke
-
-``brew install timbl``
-
-Next, install its associated python bindings, [python3-timbl](https://github.com/proycon/python-timbl) (currently this only works for Ubuntu/Debian Linux):
+MBLM relies on [python3-timbl](https://github.com/proycon/python-timbl), python bindings to the [TiMBL](https://github.com/LanguageMachines/timbl/) memory-based classification engine.
+Install with pip (wheels are available for Python versions 3.10, 3.11, and 3.12 on systems with glibc 2.28 or higher; on macOS, installation only works with Python 3.13 currently):
 
 ``% pip install python3-timbl``
 
