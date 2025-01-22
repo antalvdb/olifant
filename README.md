@@ -55,9 +55,11 @@ This also offers a way to do stepwise training with segments of training data un
 
 Simple GPT-style text completion can be invoked by issuing
 
-``python3 timbl-llm.py``
+``python3 timbl-llm.py --classifier textfile-finetune_tok.l16r0 --timbl_args '-a4 +D' --verbosity 3``
 
-The code will be updated to accept command-line parameters. Right now, the ibase file needs to be edited inside `timbl-llm.py`. 
+This call assumes the presence of `textfile-finetune_tok.l16r0.ibase`. The arguments passed to the TiMBL engine are '-a4 +D', 
+invoking the so-called TRIBL2 k-NN approximation. See the [TiMBL reference guide](https://github.com/LanguageMachines/timbl/blob/master/docs/Timbl_6.4_Manual.pdf) 
+for all possible algorithmic variants (-a), the important k parameter (set to 1 by default), and many more options.
 
 ### Credits
 
@@ -65,7 +67,7 @@ TiMBL was created 25 years ago by a team that was once the Induction of Linguist
 Tilburg University, the Netherlands; members moved to the Computational Linguistics, Psycholinguistics and Sociolinguistics
 group at Antwerp University, Belgium, and the Centre for Language and Speech Technology at Radboud University, Nijmegen, 
 the Netherlands. Core developer of TiMBL is Ko van der Sloot. Other contributors were Walter Daelemans, Antal van den Bosch, Jakub Zavrel, Peter Berck,
-Maarten van Gompel, and many more people credited more fully in the TiMBL reference guide.
+Maarten van Gompel, and many more people credited fully in the [TiMBL reference guide](https://github.com/LanguageMachines/timbl/blob/master/docs/Timbl_6.4_Manual.pdf).
 
 MBLM is a re-implementation of WOPR, a C++ version of a TiMBL-based word predictor developed by Peter Berck,
 funded under the NWO Vici project "Memory Models of Language" (2006-2011) awarded to
