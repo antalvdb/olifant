@@ -14,11 +14,11 @@ MBLM relies on [python3-timbl](https://github.com/proycon/python-timbl) and the 
 
 Install the command-line version of TiMBL on Debian/Ubuntu systems with
 
-``apt install timbl``
+``% apt install timbl``
 
-Or on macOS with brew, invoke
+On macOS with brew, invoke
 
-``brew install timbl``
+``% brew install timbl``
 
 Next, install the Python bindings to TiMBL, [python3-timbl](https://github.com/proycon/python-timbl), with pip (wheels are available for Python versions 3.10, 3.11, and 3.12 on systems with glibc 2.28 or higher; on macOS, installation only works with Python 3.13 currently):
 
@@ -31,11 +31,11 @@ Next, install the Python bindings to TiMBL, [python3-timbl](https://github.com/p
 Training MBLM assumes that you have a tokenizer and a raw-text training set `textfile`. The tokenizer will have to be the same tokenizer used for testing.
 First, the text is tokenized:
 
-``python3 tok.py textfile``
+``% python3 tok.py textfile``
 
 This creates a file `textfile_tok` which then needs to be converted to a fixed-width instance base to make it suitable training data for TiMBL:
 
-``python3 continuous-windowing.py textfile_tok > textfile_tok.l16r0``
+``% python3 continuous-windowing.py textfile_tok > textfile_tok.l16r0``
 
 This creates `textfile_tok.l16r0`, creating 16-token windowed instances with the next token as the label to be classified and all previous tokens as context. 
 Empty lines in the original tokenized text signify the reset of the context window (padding with "_").
@@ -44,7 +44,7 @@ Empty lines in the original tokenized text signify the reset of the context wind
 
 Training can then be invoked by calling TiMBL. This can take a while and may consume high amounts of RAM.
 
-``timbl -f textfile_tok.l16r0 -a0 +D -I textfile_tok.l16r0.ibase``
+``% timbl -f textfile_tok.l16r0 -a0 +D -I textfile_tok.l16r0.ibase``
 
 The end result is `textfile_tok.l16r0.ibase`, an indexed and compressed instance base suitable for TiMBL classification. In LLM terms, this is the model file
 that you will need for your favorite LLM inference steps.
@@ -55,7 +55,7 @@ MBLMs are natural incremental learners, so any learned model can be complemented
 This requires a TiMBL invocation similar to the training command; it now includes a previously generated `ibase` model file as starting point. Assuming you
 have tokenized and windowed a new training set `finetune_tok`:
 
-``timbl -a0 +D --clones=16 -i textfile_tok.l16r0.ibase -f finetune_tok.l16r0 -I textfile-finetune_tok.l16r0.ibase``
+``% timbl -a0 +D --clones=16 -i textfile_tok.l16r0.ibase -f finetune_tok.l16r0 -I textfile-finetune_tok.l16r0.ibase``
 
 Choose your own naming conventions to keep track of trained and finetuned `ibase` model files. Any `ibase` file can be the starting point for further finetuning.
 This also offers a way to do stepwise training with segments of training data under limited RAM conditions.
@@ -64,7 +64,7 @@ This also offers a way to do stepwise training with segments of training data un
 
 Simple GPT-style text completion can be invoked by issuing
 
-``python3 timbl-llm.py --classifier textfile-finetune_tok.l16r0 --timbl_args '-a4 +D' --verbosity 3``
+``% python3 timbl-llm.py --classifier textfile-finetune_tok.l16r0 --timbl_args '-a4 +D' --verbosity 3``
 
 This call assumes the presence of `textfile-finetune_tok.l16r0.ibase`. The arguments passed to the TiMBL engine are '-a4 +D', 
 invoking the so-called TRIBL2 k-NN approximation. See the [TiMBL reference guide](https://github.com/LanguageMachines/timbl/blob/master/docs/Timbl_6.4_Manual.pdf) 
