@@ -10,8 +10,17 @@ approximation of k-nearest neighbor classification.
 
 ## Installation
 
-MBLM relies on [python3-timbl](https://github.com/proycon/python-timbl), python bindings to the [TiMBL](https://github.com/LanguageMachines/timbl/) memory-based classification engine.
-Install with pip (wheels are available for Python versions 3.10, 3.11, and 3.12 on systems with glibc 2.28 or higher; on macOS, installation only works with Python 3.13 currently):
+MBLM relies on [python3-timbl](https://github.com/proycon/python-timbl) and the [TiMBL](https://github.com/LanguageMachines/timbl/) memory-based classification engine.
+
+Install the command-line version of TiMBL on Debian/Ubuntu systems with
+
+``apt install timbl``
+
+Or on macOS with brew, invoke
+
+``brew install timbl``
+
+Next, install the Python bindings to TiMBL, [python3-timbl](https://github.com/proycon/python-timbl), with pip (wheels are available for Python versions 3.10, 3.11, and 3.12 on systems with glibc 2.28 or higher; on macOS, installation only works with Python 3.13 currently):
 
 ``% pip install python3-timbl``
 
