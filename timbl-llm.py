@@ -4,7 +4,7 @@ import time
 import argparse
 import sys
 
-sys.path.append('timbl-python')
+#sys.path.append('timbl-python')
 import timbl
 
 # Global verbosity level
