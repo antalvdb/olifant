@@ -2,7 +2,8 @@
 
 This repository contains instructions and code to install, train and run memory-based LLMs. 
 
-Looking for an LLM that is relatively eco-friendly? MBLMs rely on CPUs. No GPUs or TPUs required.
+Looking for an LLM that is relatively eco-friendly? MBLMs rely on CPUs. 
+No GPUs or TPUs are required for training or inference.
 Training MBLMs is costly in terms of RAM, but not in terms of time or computing resources.
 Running an MBLM in autoregressive GPT-style mode also costs RAM, but still relies on CPUs and is reasonably fast as well, depending on the selected
 approximation of k-nearest neighbor classification.
@@ -12,7 +13,7 @@ approximation of k-nearest neighbor classification.
 
 MBLM relies on [python3-timbl](https://github.com/proycon/python-timbl) and the [TiMBL](https://github.com/LanguageMachines/timbl/) memory-based classification engine.
 
-Install the command-line version of TiMBL on Debian/Ubuntu systems with
+For training, the command-line version of TiMBL is required. Install TiMBL on Debian/Ubuntu systems with
 
 ``% apt install timbl``
 
@@ -20,7 +21,7 @@ On macOS with brew, invoke
 
 ``% brew install timbl``
 
-Next, install the Python bindings to TiMBL, [python3-timbl](https://github.com/proycon/python-timbl), with pip (wheels are available for Python versions 3.10, 3.11, and 3.12 on systems with glibc 2.28 or higher; on macOS, installation only works with Python 3.13 currently):
+Next, for inference, install the Python bindings to TiMBL, [python3-timbl](https://github.com/proycon/python-timbl), with pip (wheels are available for Python versions 3.10, 3.11, and 3.12 on systems with glibc 2.28 or higher; on macOS, installation only works with Python 3.13 currently):
 
 ``% pip install python3-timbl``
 
@@ -33,12 +34,14 @@ First, the text is tokenized:
 
 ``% python3 tok.py textfile``
 
-This creates a file `textfile_tok` which then needs to be converted to a fixed-width instance base to make it suitable training data for TiMBL:
+This creates a file `textfile_tok` which then needs to be converted to a fixed-width instance base to make it suitable training data for TiMBL.
+The example works with an input buffer of 16 tokens, which in current LLM terms is a very small input buffer. 
+At inference time, however, single instances are incrementally stored in memory, becoming available for the next steps in inference in the internal "long-term" memory of the memory-based classifier.
 
 ``% python3 continuous-windowing.py textfile_tok > textfile_tok.l16r0``
 
-This creates `textfile_tok.l16r0`, creating 16-token windowed instances with the next token as the label to be classified and all previous tokens as context. 
-Empty lines in the original tokenized text signify the reset of the context window (padding with "_").
+This creates `textfile_tok.l16r0`, creating 16-token windowed instances with the next token as the label to be classified and all previous tokens as context.
+Empty lines in the original tokenized text signify the reset of the context window (padded with "_").
 
 ### Training
 
@@ -48,6 +51,9 @@ Training can then be invoked by calling TiMBL. This can take a while and may con
 
 The end result is `textfile_tok.l16r0.ibase`, an indexed and compressed instance base suitable for TiMBL classification. In LLM terms, this is the model file
 that you will need for your favorite LLM inference steps.
+
+The option `-a0` means that the training set is compressed losslessly, with compression rates around 10-30%. 
+With `-a1`, a strong lossy compression is applied, yielding higher compression levels and considerably faster inference.
 
 ### Fine-tuning
 
