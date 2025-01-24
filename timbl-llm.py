@@ -10,9 +10,6 @@ import timbl
 # Global verbosity level
 VERBOSITY = 1
 
-# Load the tokenizer
-tokenizer = AutoTokenizer.from_pretrained('GroNLP/bert-base-dutch-cased')
-
 def log(message, level=1):
     """Logs a message if the verbosity level is sufficient."""
     if VERBOSITY >= level:
@@ -96,13 +93,18 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Memory-based text generator")
     parser.add_argument("--classifier", type=str, required=True, help="Path to the Timbl classifier file")
     parser.add_argument("--timbl_args", type=str, required=True, help="Timbl arguments as a single string (e.g., '-a4 +D')")
+    parser.add_argument("--tokenizer", type=str, required=True, help="Name of the Hugging Face tokenizer")
     parser.add_argument("--verbosity", type=int, default=0, help="Verbosity level (0: silent, 1: basic, 2: detailed, 3: debug)")
     args = parser.parse_args()
 
     # Set global verbosity level
     VERBOSITY = args.verbosity
 
+    # Load the tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(args.tokenizer)
+
     # Initialize the classifier
+    log("Loading TiMBL Classifier...", level=1)
     classifier = timbl.TimblClassifier(args.classifier, args.timbl_args)
     classifier.load()
 
