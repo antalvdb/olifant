@@ -53,7 +53,7 @@ The end result is `textfile_tok.l16r0.ibase`, an indexed and compressed instance
 that you will need for your favorite LLM inference steps.
 
 The option `-a0` means that the training set is compressed losslessly, with compression rates around 10-30%. 
-With `-a1`, a strong lossy compression is applied, yielding higher compression levels and considerably faster inference.
+With `-a1`, a strong lossy compression is applied, yielding higher compression levels around 90-95%, and considerably faster but less accurate inference.
 
 ### Fine-tuning
 
