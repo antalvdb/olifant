@@ -70,6 +70,29 @@ This call assumes the presence of `textfile-finetune_tok.l16r0.ibase`. The argum
 invoking the so-called TRIBL2 k-NN approximation. See the [TiMBL reference guide](https://github.com/LanguageMachines/timbl/blob/master/docs/Timbl_6.4_Manual.pdf) 
 for all possible algorithmic variants (-a), the important k parameter (set to 1 by default), and many more options.
 
+You can also run a Jupyter Notebook version:
+
+``% jupyter notebook timbl-llm.ipynb``
+
+Be sure to adjust the way you load your `.ibase` model file.
+
+### Inference, Hugging Face style
+
+Seen from the Hugging Face side of things, MBLM is an ModelForCausalLM. You can run MBLM more or less in Hugging Face style this way:
+
+```
+from transformers import AutoTokenizer
+tokenizer = AutoTokenizer.from_pretrained('GroNLP/bert-base-dutch-cased')
+
+model = timbl.TimblClassifier('textfile-finetune_tok.l16r0', '-a4 +D')
+model.load()
+
+prompts = ["Een aantal kleuren: rood, groen,", "Portugal is"]
+
+generated_texts = generate_text_with_timbl(model, prompts)
+print(generated_texts)
+```
+
 ### Credits
 
 TiMBL was created 25 years ago by a team that was once the Induction of Linguistic Knowledge group at 
