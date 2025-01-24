@@ -64,7 +64,7 @@ This also offers a way to do stepwise training with segments of training data un
 
 Simple GPT-style text completion can be invoked by issuing
 
-``% python3 timbl-llm.py --classifier textfile-finetune_tok.l16r0 --timbl_args '-a4 +D' --verbosity 3``
+``% python3 timbl-llm.py --classifier textfile-finetune_tok.l16r0 --tokenizer bert-base-cased --timbl_args '-a4 +D' --verbosity 3``
 
 This call assumes the presence of `textfile-finetune_tok.l16r0.ibase`. The arguments passed to the TiMBL engine are '-a4 +D', 
 invoking the so-called TRIBL2 k-NN approximation. See the [TiMBL reference guide](https://github.com/LanguageMachines/timbl/blob/master/docs/Timbl_6.4_Manual.pdf) 
@@ -78,11 +78,11 @@ Be sure to adjust the way you load your `.ibase` model file.
 
 ### Inference, Hugging Face style
 
-Seen from the Hugging Face side of things, MBLM is an ModelForCausalLM. You can run MBLM more or less in Hugging Face style this way:
+You can run MBLM more or less in Hugging Face style this way:
 
 ```
 from transformers import AutoTokenizer
-tokenizer = AutoTokenizer.from_pretrained('GroNLP/bert-base-dutch-cased')
+tokenizer = AutoTokenizer.from_pretrained('bert-base-cased')
 
 model = timbl.TimblClassifier('textfile-finetune_tok.l16r0', '-a4 +D')
 model.load()
