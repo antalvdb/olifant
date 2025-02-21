@@ -99,7 +99,7 @@ generated_texts = generate_text_with_timbl(model, prompts)
 print(generated_texts)
 ```
 
-Also, in this Jupyter Notebook you see how MBLM can be fully
+Alternatively, in this Jupyter Notebook you see how MBLM can be fully
 integrated into Hugging Face:
 
 ``% jupyter notebook timbl-llm-hf.ipynb``
