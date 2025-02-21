@@ -84,23 +84,8 @@ Be sure to adjust the way you load your `.ibase` model file.
 
 ### Inference, Hugging Face style
 
-You can run MBLM more or less in Hugging Face style this way:
-
-```
-from transformers import AutoTokenizer
-tokenizer = AutoTokenizer.from_pretrained('bert-base-cased')
-
-model = timbl.TimblClassifier('textfile-finetune_tok.l16r0', '-a4 +D')
-model.load()
-
-prompts = ["Een aantal kleuren: rood, groen,", "Portugal is"]
-
-generated_texts = generate_text_with_timbl(model, prompts)
-print(generated_texts)
-```
-
-Alternatively, in this Jupyter Notebook you see how MBLM can be fully
-integrated into Hugging Face:
+In this Jupyter Notebook you see how MBLM can be run Hugging
+Face style:
 
 ``% jupyter notebook timbl-llm-hf.ipynb``
 
@@ -120,18 +105,6 @@ An excerpt from this code shows how a `TimblHuggingFaceModel` is initialized:
 
     # Initialize the TimblHuggingFaceModel
     model = TimblHuggingFaceModel(config, classifier, tokenizer)
-```
-
-The code also exemplifies an integration into the Hugging Face / pytorch way of representing
-output using logits and token IDs:
-
-```
-        # Initialize logits with a default value (e.g., -inf)
-        logits = torch.full((1, vocab_size), float('-inf'), device=device)
-
-        # Fill logits with probabilities from the Timbl distribution
-        for word, probability in distribution.items():
-            hf_token_id = self.tokenizer.convert_tokens_to_ids(word)
 ```
 
 ### Credits
