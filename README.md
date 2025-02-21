@@ -99,6 +99,41 @@ generated_texts = generate_text_with_timbl(model, prompts)
 print(generated_texts)
 ```
 
+Also, in this Jupyter Notebook you see how MBLM can be fully
+integrated into Hugging Face:
+
+``% jupyter notebook timbl-llm-hf.ipynb``
+
+An excerpt from this code shows how a `TimblHuggingFaceModel` is initialized:
+
+```
+    # Initialize the tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(args.tokenizer)
+
+    # Initialize the Timbl classifier
+    classifier = timbl.TimblClassifier(args.classifier, args.timbl_args)
+    classifier.load()
+
+    config = AutoConfig.from_pretrained("antalvdb/mblm-chatbot-instruction-prompts-igtree")
+    tokenizer.add_special_tokens({'pad_token': '_'})
+    tokenizer.pad_token = "_"
+
+    # Initialize the TimblHuggingFaceModel
+    model = TimblHuggingFaceModel(config, classifier, tokenizer)
+```
+
+The code also exemplifies an integration into the Hugging Face / pytorch way of representing
+output using logits and token IDs:
+
+```
+        # Initialize logits with a default value (e.g., -inf)
+        logits = torch.full((1, vocab_size), float('-inf'), device=device)
+
+        # Fill logits with probabilities from the Timbl distribution
+        for word, probability in distribution.items():
+            hf_token_id = self.tokenizer.convert_tokens_to_ids(word)
+```
+
 ### Credits
 
 TiMBL was created 25 years ago by a team that was once the Induction of Linguistic Knowledge group at 
@@ -111,5 +146,5 @@ MBLM is a re-implementation of WOPR, a C++ version of a TiMBL-based word predict
 funded under the NWO Vici project "Memory Models of Language" (2006-2011) awarded to
 Antal van den Bosch. Peter Berck wrote a [PhD thesis](https://repository.ubn.ru.nl/bitstream/handle/2066/168708/168708.pdf?sequence=1) on the topic. 
 Later, work on memory-based word prediction was
-carried forwards by Wessel Stoop ([Valkuil](https://valkuil.net)) and Maarten van Gompel ([Colibri Core](https://github.com/proycon/colibri-core)).
+carried forwards by Wessel Stoop ([Valkuil](https://valkuil.net), ) and Maarten van Gompel ([Colibri Core](https://github.com/proycon/colibri-core)).
 See this [interactive publication](https://pudding.cool/2019/04/text-prediction/) on autocompletion and next-word prediction.
