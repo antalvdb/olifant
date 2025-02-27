@@ -123,5 +123,5 @@ MBLM is a re-implementation of WOPR, a C++ version of a TiMBL-based word predict
 funded under the NWO Vici project "Memory Models of Language" (2006-2011) awarded to
 Antal van den Bosch. Peter Berck wrote a [PhD thesis](https://repository.ubn.ru.nl/bitstream/handle/2066/168708/168708.pdf?sequence=1) on the topic. 
 Later, work on memory-based word prediction was
-carried forwards by Wessel Stoop ([Valkuil](https://valkuil.net), ) and Maarten van Gompel ([Colibri Core](https://github.com/proycon/colibri-core)).
+carried forwards by Wessel Stoop and Maarten van Gompel ([Valkuil](https://valkuil.net), [Colibri Core](https://github.com/proycon/colibri-core)).
 See this [interactive publication](https://pudding.cool/2019/04/text-prediction/) on autocompletion and next-word prediction.
