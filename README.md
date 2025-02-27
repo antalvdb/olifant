@@ -115,6 +115,10 @@ group at Antwerp University, Belgium, and the Centre for Language and Speech Tec
 the Netherlands. Core developer of TiMBL is Ko van der Sloot. Other contributors were Walter Daelemans, Antal van den Bosch, Jakub Zavrel, Peter Berck,
 Maarten van Gompel, and many more people credited fully in the [TiMBL reference guide](https://github.com/LanguageMachines/timbl/blob/master/docs/Timbl_6.4_Manual.pdf).
 
+MBLM was first described in
+
+> Van den Bosch, A. (2005). [Scalable classification-based word prediction and confusible correction](https://pure.uvt.nl/ws/portalfiles/portal/792903/scalable.pdf). *Traitement Automatique des Langues*, 46:2, pp. 39-63.
+
 MBLM is a re-implementation of WOPR, a C++ version of a TiMBL-based word predictor developed by Peter Berck,
 funded under the NWO Vici project "Memory Models of Language" (2006-2011) awarded to
 Antal van den Bosch. Peter Berck wrote a [PhD thesis](https://repository.ubn.ru.nl/bitstream/handle/2066/168708/168708.pdf?sequence=1) on the topic. 
