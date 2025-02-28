@@ -22,16 +22,16 @@ def pad_prompt(words, max_len=16):
         words = words[-max_len:]
     return words
 
+def log_probs_from_logits(logits, labels):
+    logp = F.log_softmax(logits, dim=-1)
+    logp_label = torch.gather(logp, 1, labels.unsqueeze(1)).squeeze(-1)
+    return logp_label
+
 class TimblHuggingFaceModel(PreTrainedModel):
 
     # Define a function to replace values with actual floats
     def float_converter(match):
         return f"{match.group(1)}: {float(match.group(2))}"
-
-    def log_probs_from_logits(logits, labels):
-        logp = F.log_softmax(logits, dim=-1)
-        logp_label = torch.gather(logp, 1, labels.unsqueeze(1)).squeeze(-1)
-        return logp_label
 
     def sequence_logprob(self, labels, tokenizer, max_len=16):
         with torch.no_grad():
