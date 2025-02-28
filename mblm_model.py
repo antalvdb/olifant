@@ -36,7 +36,8 @@ class TimblHuggingFaceModel(PreTrainedModel):
     def sequence_logprob(self, labels, tokenizer, max_len=16):
         with torch.no_grad():
             seq_log_prob = 0.0
-            input_ids = tokenizer(labels, return_tensors="pt", add_special_tokens=False)["input_ids"].to("cpu")
+            text = tokenizer.decode(labels[0], skip_special_tokens=True)
+            input_ids = tokenizer(text, return_tensors="pt", add_special_tokens=False)["input_ids"].to("cpu")
 
             for i in range(len(labels[0])):
                 # Pad the input tokens
