@@ -27,43 +27,6 @@ def log_probs_from_logits(logits, labels):
     logp_label = torch.gather(logp, 1, labels.unsqueeze(1)).squeeze(-1)
     return logp_label
 
-def sequence_logprob(model, labels, input_len, tokenizer, max_len=16):
-    with torch.no_grad():
-        seq_log_prob = 0.0
-        input_ids = tokenizer(input_txt, return_tensors="pt", add_special_tokens=False)["input_ids"].to("cpu")
-
-        for i in range(len(labels[0])):
-            # Pad the input tokens
-            tokens = tokenizer.convert_ids_to_tokens(input_ids[0])
-            padded_tokens = pad_prompt(tokens, max_len=max_len)
-
-            # Re-encode the padded tokens
-            encoded_input = tokenizer.encode(" ".join(padded_tokens), return_tensors="pt", padding="max_length", truncation=True, max_length=max_len, add_special_tokens=False)
-            input_ids = encoded_input[0].to("cpu")
-
-            output = model(input_ids)
-            next_token_logits = output.logits[0, :]
-
-            # Get the actual next token id from labels
-            next_token_id = labels[0][i].unsqueeze(0)
-
-            # Calculate log probability of the actual next token
-            # Added squeeze(0) to next_token_id to make it have shape [1]
-            log_probs = log_probs_from_logits(next_token_logits.unsqueeze(0), next_token_id.squeeze(0).unsqueeze(0))
-
-            # Check if the log probability is -inf and skip if it is, log a warning
-            if np.isinf(log_probs.cpu().numpy()):
-                log(f"Warning: log probability is -inf for token index: {i}, skipping.", level = 3)
-
-            else:
-                # Add to the sequence log prob
-                seq_log_prob += log_probs.cpu().numpy()
-
-            # Prepare for the next iteration, if it's not the last token
-            if i < len(labels[0]) - 1:
-              input_ids = torch.cat((input_ids[1:].unsqueeze(0), next_token_id.unsqueeze(0)), dim=1)
-
-    return seq_log_prob.sum() # Sum all values to return a single float
 
 class TimblHuggingFaceModel(PreTrainedModel):
 
@@ -71,6 +34,45 @@ class TimblHuggingFaceModel(PreTrainedModel):
     def float_converter(match):
         return f"{match.group(1)}: {float(match.group(2))}"
 
+    def sequence_logprob(self, labels, input_len, tokenizer, max_len=16):
+        with torch.no_grad():
+            seq_log_prob = 0.0
+            input_ids = tokenizer(input_txt, return_tensors="pt", add_special_tokens=False)["input_ids"].to("cpu")
+
+            for i in range(len(labels[0])):
+                # Pad the input tokens
+                tokens = tokenizer.convert_ids_to_tokens(input_ids[0])
+                padded_tokens = pad_prompt(tokens, max_len=max_len)
+
+                # Re-encode the padded tokens
+                encoded_input = tokenizer.encode(" ".join(padded_tokens), return_tensors="pt", padding="max_length", truncation=True, max_length=max_len, add_special_tokens=False)
+                input_ids = encoded_input[0].to("cpu")
+
+                output = self(input_ids)
+                next_token_logits = output.logits[0, :]
+
+                # Get the actual next token id from labels
+                next_token_id = labels[0][i].unsqueeze(0)
+
+                # Calculate log probability of the actual next token
+                # Added squeeze(0) to next_token_id to make it have shape [1]
+                log_probs = log_probs_from_logits(next_token_logits.unsqueeze(0), next_token_id.squeeze(0).unsqueeze(0))
+
+                # Check if the log probability is -inf and skip if it is, log a warning
+                if np.isinf(log_probs.cpu().numpy()):
+                    log(f"Warning: log probability is -inf for token index: {i}, skipping.", level = 3)
+
+                else:
+                    # Add to the sequence log prob
+                    seq_log_prob += log_probs.cpu().numpy()
+
+                # Prepare for the next iteration, if it's not the last token
+                if i < len(labels[0]) - 1:
+                  input_ids = torch.cat((input_ids[1:].unsqueeze(0), next_token_id.unsqueeze(0)), dim=1)
+
+        return seq_log_prob.sum() # Sum all values to return a single float
+
+    
     def __init__(self, config, timbl_classifier, tokenizer):
         super().__init__(config)
         self.timbl_classifier = timbl_classifier
