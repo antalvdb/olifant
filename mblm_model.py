@@ -33,7 +33,7 @@ class TimblHuggingFaceModel(PreTrainedModel):
     def float_converter(match):
         return f"{match.group(1)}: {float(match.group(2))}"
 
-def sequence_logprob(self, labels, tokenizer): # Add tokenizer as input
+    def sequence_logprob(self, labels, tokenizer): # Add tokenizer as input
         """
         Calculate the log probability of a sequence.
         """
