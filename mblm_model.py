@@ -33,7 +33,7 @@ class TimblHuggingFaceModel(PreTrainedModel):
     def float_converter(match):
         return f"{match.group(1)}: {float(match.group(2))}"
 
-    def sequence_logprob(self, labels, tokenizer): # Add tokenizer as input
+    def sequence_logprob_alt(self, labels, tokenizer): # Add tokenizer as input
         """
         Calculate the log probability of a sequence.
         """
@@ -51,15 +51,15 @@ class TimblHuggingFaceModel(PreTrainedModel):
 
         return logprobs
     
-    def sequence_logprob_old(self, labels, tokenizer, max_len=16):
+    def sequence_logprob(self, labels, tokenizer, max_len=16):
         with torch.no_grad():
             seq_log_prob = 0.0
-            text = tokenizer.decode(labels[0], skip_special_tokens=True)
-            input_ids = tokenizer(text, return_tensors="pt", add_special_tokens=False)["input_ids"].to("cpu")
-
+            #text = tokenizer.decode(labels[0], skip_special_tokens=True)
+            #input_ids = tokenizer(text, return_tensors="pt", add_special_tokens=False)["input_ids"].to("cpu")
+            
             for i in range(len(labels[0])):
                 # Pad the input tokens
-                tokens = tokenizer.convert_ids_to_tokens(input_ids[0])
+                tokens = tokenizer.convert_ids_to_tokens(labels)
                 padded_tokens = pad_prompt(tokens, max_len=max_len)
 
                 # Re-encode the padded tokens
