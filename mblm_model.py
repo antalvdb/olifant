@@ -22,6 +22,24 @@ def pad_prompt(words, max_len=16):
         words = words[-max_len:]
     return words
 
+def pad_prompt_tokenids(token_ids, max_len=16, pad_token_id=None):
+    """Pad or trim the list of token IDs to make it exactly `max_len`."""
+    if token_ids is None:
+        token_ids = []
+
+    current_len = len(token_ids)
+
+    if current_len < max_len:
+        # Pad with pad_token_id if provided, otherwise use 0
+        padding = [pad_token_id if pad_token_id is not None else 0] * (max_len - current_len)
+        token_ids = padding + token_ids  # prepend padding for Timbl
+        #token_ids = token_ids + padding  # append padding (more common)
+    elif current_len > max_len:
+        token_ids = token_ids[-max_len:]  # trim for Timbl
+
+    return token_ids
+
+
 def log_probs_from_logits(logits, labels):
     logp = F.log_softmax(logits, dim=-1)
     logp_label = torch.gather(logp, 1, labels.unsqueeze(1)).squeeze(-1)
@@ -33,64 +51,48 @@ class TimblHuggingFaceModel(PreTrainedModel):
     def float_converter(match):
         return f"{match.group(1)}: {float(match.group(2))}"
 
-    def sequence_logprob_alt(self, labels, tokenizer): # Add tokenizer as input
-        """
-        Calculate the log probability of a sequence.
-        """
-
-        # Directly use the labels (input token IDs)
-        input_ids = labels # Assuming labels is a tensor of token IDs
-
-        # Pad the input if necessary
-        #padded_input_ids = self.pad_sequence(input_ids, self.config.max_length, self.tokenizer.pad_token_id)
-        padded_input_ids = input_ids
-
-        # Pass the padded token IDs directly to the Timbl classifier
-        timbl_input = [[(token_id.item()) for token_id in padded_input_ids[0]]]
-        logprobs = self.logprob(timbl_input) # Assumed logprob from TimblClassifier
-
-        return logprobs
-    
     def sequence_logprob(self, labels, tokenizer, max_len=16):
         with torch.no_grad():
-            seq_log_prob = 0.0
-            #text = tokenizer.decode(labels[0], skip_special_tokens=True)
-            #input_ids = tokenizer(text, return_tensors="pt", add_special_tokens=False)["input_ids"].to("cpu")
-            
-            for i in range(len(labels[0])):
-                # Pad the input tokens
-                tokens = tokenizer.convert_ids_to_tokens(labels)
-                padded_tokens = pad_prompt(tokens, max_len=max_len)
+            seq_log_prob = []
+            pad_token_id = tokenizer.convert_tokens_to_ids(tokenizer.pad_token) #Get the pad_token_id
 
-                # Re-encode the padded tokens
-                encoded_input = tokenizer.encode(" ".join(padded_tokens), return_tensors="pt", padding="max_length", truncation=True, max_length=max_len, add_special_tokens=False)
-                input_ids = encoded_input[0].to("cpu")
+            for i in range(len(labels[0])):
+                # Pad the input token IDs directly
+                padded_token_ids = pad_prompt_tokenids(labels[0][:i+1].tolist(), max_len=max_len, pad_token_id=pad_token_id)
+                log(f"sequence_logprob: padded_token_ids: {padded_token_ids}", level = 3)
+
+                # Convert padded token IDs to a PyTorch tensor
+                input_ids = torch.tensor(padded_token_ids, dtype=torch.int64).unsqueeze(0).to("cpu")
+                log(f"sequence_logprob: input_ids: {input_ids}", level = 3)
 
                 output = self(input_ids)
+                log(f"sequence_logprob: output: {output}", level = 3)
                 next_token_logits = output.logits[0, :]
+                log(f"sequence_logprob: next_token_logits: {next_token_logits}", level = 3)
 
                 # Get the actual next token id from labels
                 next_token_id = labels[0][i].unsqueeze(0)
+                log(f"sequence_logprob: next_token_id: {next_token_id}", level = 3)
 
                 # Calculate log probability of the actual next token
                 # Added squeeze(0) to next_token_id to make it have shape [1]
                 log_probs = log_probs_from_logits(next_token_logits.unsqueeze(0), next_token_id.squeeze(0).unsqueeze(0))
+                log(f"sequence_logprob: log_probs: {log_probs}", level = 3)
 
                 # Check if the log probability is -inf and skip if it is, log a warning
                 if np.isinf(log_probs.cpu().numpy()):
                     log(f"Warning: log probability is -inf for token index: {i}, skipping.", level = 3)
 
                 else:
-                    # Add to the sequence log prob
-                    seq_log_prob += log_probs.cpu().numpy()
+                    seq_log_prob.append(log_probs.cpu().numpy().item()) # Append the log probability as a scalar
+                    log(f"sequence_logprob: log_probs added: {log_probs}", level = 3)
 
                 # Prepare for the next iteration, if it's not the last token
                 if i < len(labels[0]) - 1:
-                  input_ids = torch.cat((input_ids[1:].unsqueeze(0), next_token_id.unsqueeze(0)), dim=1)
+                  input_ids = torch.cat((input_ids[0, 1:].unsqueeze(0), next_token_id.unsqueeze(0)), dim=1).unsqueeze(0)
 
-        return seq_log_prob.sum() # Sum all values to return a single float
+        return np.sum(seq_log_prob) # Sum all values in the list to return a single float
 
-    
     def __init__(self, config, timbl_classifier, tokenizer):
         super().__init__(config)
         self.timbl_classifier = timbl_classifier
@@ -138,7 +140,7 @@ class TimblHuggingFaceModel(PreTrainedModel):
         # Get vocabulary size from the tokenizer
         vocab_size = self.tokenizer.vocab_size
 
-        # Initialize logits with a default value (e.g., -inf)
+        # Initialize logits with default value -inf
         logits = torch.full((1, vocab_size), float('-inf'), device=device)
 
         # Fill logits with probabilities from the Timbl distribution
