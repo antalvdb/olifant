@@ -97,10 +97,10 @@ class TimblHuggingFaceModel(PreTrainedModel):
         super().__init__(config)
         self.timbl_classifier = timbl_classifier
         self.tokenizer = tokenizer  # Store tokenizer
-
+        # Create an empty tensor for probabilities
+        self.probabilities_tensor = torch.empty(0, device=device)
+        
     def forward(self, input_ids, **kwargs):
-
-        #print("inside forward")
 
         # Convert input_ids to Timbl format
         timbl_input = self.convert_to_timbl_input(input_ids)
@@ -132,36 +132,29 @@ class TimblHuggingFaceModel(PreTrainedModel):
 
     def convert_to_huggingface_logits(self, distribution):
 
-        #print("inside convert_to_huggingface_logits")
-
         # Bypassing the typical HuggingFace device setting and passing
         device = "cpu"
 
         # Get vocabulary size from the tokenizer
         vocab_size = self.tokenizer.vocab_size
 
-        # Initialize logits with default value -inf
+        # Initialize logits with a default value (e.g., -inf)
         logits = torch.full((1, vocab_size), float('-inf'), device=device)
 
-        # Fill logits with probabilities from the Timbl distribution
-        for word, probability in distribution.items():
-            hf_token_id = self.tokenizer.convert_tokens_to_ids(word)
+        # Filter out tokens not in the Hugging Face vocabulary
+        hf_token_ids = [self.tokenizer.convert_tokens_to_ids(word)
+                          for word in distribution.keys()]
 
-            # Check if hf_token_id is a list and take the first element if it is
-            # Handling nested lists as well
-            while isinstance(hf_token_id, list) and len(hf_token_id) > 0:
-                hf_token_id = hf_token_id[0]
+        # Convert hf_token_ids to tensor
+        hf_token_ids_tensor = torch.tensor(hf_token_ids, device=device)
 
-            if isinstance(hf_token_id, int):  # Ensure it's now an integer
-                try:
-                    logits[0, hf_token_id] = torch.tensor(probability, device=device)
-                    log(f"logits[0], hf_token_id]:  {logits[0, hf_token_id]} ", level = 4)
-                    log(f"Logits shape: {logits.shape}", level = 4)
-                except IndexError:
-                    # Handle the case where hf_token_id is out of bounds
-                    log(f"Warning: Token ID {hf_token_id} is out of bounds for logits shape {logits.shape}", level=1)
-            else:
-                log(f"Warning: Skipping word '{word}' due to unexpected token ID format: {hf_token_id}", level=1)
+        # Get probabilities from the distribution (This is the fix!)
+        probabilities = [value for value in distribution.values()]
+
+        # Resize the probabilities tensor after filtering
+        self.probabilities_tensor.resize_(len(probabilities)).copy_(torch.tensor(probabilities))
+
+        logits[0].scatter_(0, hf_token_ids_tensor, self.probabilities_tensor)  # In-place scatter
 
         return logits
 
