@@ -98,7 +98,7 @@ class TimblHuggingFaceModel(PreTrainedModel):
         self.timbl_classifier = timbl_classifier
         self.tokenizer = tokenizer  # Store tokenizer
         # Create an empty tensor for probabilities
-        self.probabilities_tensor = torch.empty(0, device=device)
+        self.probabilities_tensor = torch.empty(0, device="cpu")
         
     def forward(self, input_ids, **kwargs):
 
