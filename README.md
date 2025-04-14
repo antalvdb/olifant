@@ -30,7 +30,8 @@ Next, for inference, install the Python bindings to TiMBL, [python3-timbl](https
 ### Tokenization
 
 Training MBLM assumes that you have a tokenizer and a raw-text training set `textfile`. The tokenizer will have to be the same tokenizer used for testing.
-First, the text is tokenized:
+First, the text is tokenized using `bert-base-cased` (a standard LLM tokenizer from Hugging Face; we will need to use the same tokenizer in later steps).
+Edit `tok.py` if you want to use a different tokenizer.
 
 ``% python3 tok.py textfile``
 
@@ -59,7 +60,7 @@ With `-a1`, a strong lossy compression is applied, yielding higher compression l
 
 MBLMs are natural incremental learners, so any learned model can be complemented by additional fine-tuning from any new training set, creating a new `ibase` model. 
 This requires a TiMBL invocation similar to the training command; it now includes a previously generated `ibase` model file as starting point. Assuming you
-have tokenized and windowed a new training set `finetune_tok`:
+have tokenized and windowed a new training set `finetune_tok.l16r0`:
 
 ``% timbl -a0 +D --clones=16 -i textfile_tok.l16r0.ibase -f finetune_tok.l16r0 -I textfile-finetune_tok.l16r0.ibase``
 
