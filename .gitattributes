@@ -1,0 +1,8 @@
+chatbot_instructions_prompts_tok.l16r0.ibase filter=lfs diff=lfs merge=lfs -text
+chatbot-instruction-prompts-100k_tok.l16r0.ibase filter=lfs diff=lfs merge=lfs -text
+chatbot-instruction-prompts_tok.l16r0.igtree.ibase filter=lfs diff=lfs merge=lfs -text
+edufineweb_train_000001-1k_tok.l16r0.ibase filter=lfs diff=lfs merge=lfs -text
+edufineweb_train_000001_half_tok.l16r0.igtree.ibase filter=lfs diff=lfs merge=lfs -text
+edufineweb_train_000001_half_tok.l16r0.igtree.ibase.wgt filter=lfs diff=lfs merge=lfs -text
+edufineweb_train_000001-100k_tok.l16r0.ibase filter=lfs diff=lfs merge=lfs -text
+edufineweb_train_000001-10k_tok.l16r0.ibase filter=lfs diff=lfs merge=lfs -text
