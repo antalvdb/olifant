@@ -83,7 +83,7 @@ def generate_text_from_api(classifier, initial_prompt, max_words=200):
         generated_text = generated_text.replace("_", "").strip()
         
         # Print the final generated text
-        log(f"Generated text: {generated_text}", level=1)
+        log(f"Generated text: {generated_text}", level=0)
                     
     except Exception as e:
         log(f"Error: {e}", level=1)
