@@ -12,7 +12,7 @@ def log(message, level=1):
     if VERBOSITY >= level:
         print(message)
 
-def pad_prompt(words, max_len=16):
+def pad_prompt(words, max_len=4):
     """Pad or trim the list of words to make it exactly `max_len` words."""
     if words is None:
         words = []  # Ensure words is a list
@@ -22,7 +22,7 @@ def pad_prompt(words, max_len=16):
         words = words[-max_len:]
     return words
 
-def pad_prompt_tokenids(token_ids, max_len=16, pad_token_id=None):
+def pad_prompt_tokenids(token_ids, max_len=4, pad_token_id=None):
     """Pad or trim the list of token IDs to make it exactly `max_len`."""
     if token_ids is None:
         token_ids = []
@@ -51,7 +51,7 @@ class TimblHuggingFaceModel(PreTrainedModel):
     def float_converter(match):
         return f"{match.group(1)}: {float(match.group(2))}"
 
-    def sequence_logprob(self, labels, tokenizer, max_len=16):
+    def sequence_logprob(self, labels, tokenizer, max_len=4):
         with torch.no_grad():
             seq_log_prob = []
             pad_token_id = tokenizer.convert_tokens_to_ids(tokenizer.pad_token) #Get the pad_token_id
@@ -195,7 +195,7 @@ class TimblHuggingFaceModel(PreTrainedModel):
         padded_instances = []
         for i in range(len(initial_tokens)):
             # Take the tokens up to the current position and pad them
-            instance = pad_prompt(initial_tokens[:i], max_len=16)
+            instance = pad_prompt(initial_tokens[:i], max_len=4)
             padded_instances.append((instance, initial_tokens[i] if i < len(initial_tokens) else '_'))
 
         # Add instances to memory
@@ -212,7 +212,7 @@ class TimblHuggingFaceModel(PreTrainedModel):
                 for i, seq in enumerate(sequences):
                     # Pad the input tokens
                     tokens = self.tokenizer.convert_ids_to_tokens(seq[0])
-                    padded_tokens = pad_prompt(tokens, max_len=16)
+                    padded_tokens = pad_prompt(tokens, max_len=4)
                     log(f"padded_tokens: {padded_tokens}", level = 3)
 
                     # Convert padded_tokens back into token_ids for timbl input
