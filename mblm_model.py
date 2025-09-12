@@ -58,7 +58,7 @@ class TimblHuggingFaceModel(PreTrainedModel):
 
             for i in range(len(labels[0])):
                 # Pad the input token IDs directly
-                padded_token_ids = pad_prompt_tokenids(labels[0][:i+1].tolist(), max_len=max_len, pad_token_id=pad_token_id)
+                padded_token_ids = pad_prompt_tokenids(labels[0][:i].tolist(), max_len=max_len, pad_token_id=pad_token_id)
                 log(f"sequence_logprob: padded_token_ids: {padded_token_ids}", level = 3)
 
                 # Convert padded token IDs to a PyTorch tensor
