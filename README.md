@@ -1,17 +1,19 @@
-# Memory-based language modeling
+# Olifant: Memory-based language modeling
 
 This repository contains instructions and code to install, train and run memory-based LLMs. 
 
-Looking for an LLM that is relatively eco-friendly? MBLMs rely on CPUs. 
+Looking for an LLM that is relatively eco-friendly? Memory-based language models rely on CPUs. 
 No GPUs or TPUs are required for training or inference.
-Training MBLMs is costly in terms of RAM, but not in terms of time or computing resources.
-Running an MBLM in autoregressive GPT-style mode also costs RAM, but still relies on CPUs and is reasonably fast as well, depending on the selected
+Training memory-based language models is costly in terms of RAM, but not in terms of time or computing resources.
+Running a memory-based language model in autoregressive GPT-style mode also costs RAM, but still relies on CPUs and is reasonably fast as well, depending on the selected
 approximation of k-nearest neighbor classification.
+
+*Olifant* is our implementation of memory-based language modeling; it is the Dutch word for elephant. To quote [Wikipedia](https://en.wikipedia.org/wiki/Elephant_cognition), "Most contemporary ethologists view the elephant as one of the world's most intelligent animals. Elephants manifest a wide variety of behaviors, including those associated with grief, learning, mimicry, playing, altruism, tool use, compassion, cooperation, self-awareness, memory, and communication."
 
 
 ## Installation
 
-MBLM relies on [python3-timbl](https://github.com/proycon/python-timbl) and the [TiMBL](https://github.com/LanguageMachines/timbl/) memory-based classification engine.
+*Olifant* relies on [python3-timbl](https://github.com/proycon/python-timbl) and the [TiMBL](https://github.com/LanguageMachines/timbl/) memory-based classification engine.
 
 For training, the command-line version of TiMBL is required. Install TiMBL on Debian/Ubuntu systems with
 
@@ -29,7 +31,7 @@ Next, for inference, install the Python bindings to TiMBL, [python3-timbl](https
 
 ### Tokenization
 
-Training MBLM assumes that you have a tokenizer and a raw-text training set `textfile`. The tokenizer will have to be the same tokenizer used for testing.
+Training *Olifant* assumes that you have a tokenizer and a raw-text training set `textfile`. The tokenizer will have to be the same tokenizer used for testing.
 First, the text is tokenized using `bert-base-cased` (a standard LLM tokenizer from Hugging Face; we will need to use the same tokenizer in later steps).
 Edit `tok.py` if you want to use a different tokenizer.
 
@@ -39,18 +41,18 @@ This creates a file `textfile_tok` which then needs to be converted to a fixed-w
 The example works with an input buffer of 16 tokens, which in current LLM terms is a very small input buffer. 
 At inference time, however, single instances are incrementally stored in memory, becoming available for the next steps in inference in the internal "long-term" memory of the memory-based classifier.
 
-``% python3 continuous-windowing.py textfile_tok > textfile_tok.l16r0``
+``% python3 continuous-windowing.py textfile_tok 4 > textfile_tok.l4r0``
 
-This creates `textfile_tok.l16r0`, creating 16-token windowed instances with the next token as the label to be classified and all previous tokens as context.
+This creates `textfile_tok.l4r0`, creating 4-token windowed instances with the next token as the label to be classified and all previous tokens as context.
 Empty lines in the original tokenized text signify the reset of the context window (padded with "_").
 
 ### Training
 
 Training can then be invoked by calling TiMBL. This can take a while and may consume high amounts of RAM.
 
-``% timbl -f textfile_tok.l16r0 -a0 +D -I textfile_tok.l16r0.ibase``
+``% timbl -f textfile_tok.l4r0 -a0 +D -I textfile_tok.l4r0.ibase``
 
-The end result is `textfile_tok.l16r0.ibase`, an indexed and compressed instance base suitable for TiMBL classification. In LLM terms, this is the model file
+The end result is `textfile_tok.l4r0.ibase`, an indexed and compressed instance base suitable for TiMBL classification. In LLM terms, this is the model file
 that you will need for your favorite LLM inference steps.
 
 The option `-a0` means that the training set is compressed losslessly, with compression rates around 10-30%. 
@@ -58,11 +60,11 @@ With `-a1`, a strong lossy compression is applied, yielding higher compression l
 
 ### Fine-tuning
 
-MBLMs are natural incremental learners, so any learned model can be complemented by additional fine-tuning from any new training set, creating a new `ibase` model. 
+Memory-based language models are natural incremental learners, so any learned model can be complemented by additional fine-tuning from any new training set, creating a new `ibase` model. 
 This requires a TiMBL invocation similar to the training command; it now includes a previously generated `ibase` model file as starting point. Assuming you
-have tokenized and windowed a new training set `finetune_tok.l16r0`:
+have tokenized and windowed a new training set `finetune_tok.l4r0`:
 
-``% timbl -a0 +D --clones=16 -i textfile_tok.l16r0.ibase -f finetune_tok.l16r0 -I textfile-finetune_tok.l16r0.ibase``
+``% timbl -a0 +D -i textfile_tok.l4r0.ibase -f finetune_tok.l4r0 -I textfile-finetune_tok.l4r0.ibase``
 
 Choose your own naming conventions to keep track of trained and finetuned `ibase` model files. Any `ibase` file can be the starting point for further finetuning.
 This also offers a way to do stepwise training with segments of training data under limited RAM conditions.
@@ -71,10 +73,10 @@ This also offers a way to do stepwise training with segments of training data un
 
 Simple GPT-style text completion can be invoked by issuing
 
-``% python3 timbl-llm.py --classifier textfile-finetune_tok.l16r0 --tokenizer bert-base-cased --timbl_args '-a4 +D' --verbosity 3``
+``% python3 timbl-llm.py --classifier textfile-finetune_tok.l4r0 --tokenizer bert-base-cased --timbl_args '-a4 +D' --verbosity 3``
 
-This call assumes the presence of `textfile-finetune_tok.l16r0.ibase`. The arguments passed to the TiMBL engine are '-a4 +D', 
-invoking the so-called TRIBL2 k-NN approximation. See the [TiMBL reference guide](https://github.com/LanguageMachines/timbl/blob/master/docs/Timbl_6.4_Manual.pdf) 
+This call assumes the presence of `textfile-finetune_tok.l4r0.ibase`. The arguments passed to the TiMBL engine are '-a4 +D', 
+invoking the so-called TRIBL2 k-NN approximation, a relatively fast approximation of *k*-nearest neighbor classification. See the [TiMBL reference guide](https://github.com/LanguageMachines/timbl/blob/master/docs/Timbl_6.4_Manual.pdf) 
 for all possible algorithmic variants (-a), the important k parameter (set to 1 by default), and many more options.
 
 You can also run a Jupyter Notebook version:
@@ -116,11 +118,11 @@ group at Antwerp University, Belgium, and the Centre for Language and Speech Tec
 the Netherlands. Core developer of TiMBL is Ko van der Sloot. Other contributors were Walter Daelemans, Antal van den Bosch, Jakub Zavrel, Peter Berck,
 Maarten van Gompel, and many more people credited fully in the [TiMBL reference guide](https://github.com/LanguageMachines/timbl/blob/master/docs/Timbl_6.4_Manual.pdf).
 
-MBLM was first described in
+Memory-based language modeling was first described in
 
 > Van den Bosch, A. (2005). [Scalable classification-based word prediction and confusible correction](https://pure.uvt.nl/ws/portalfiles/portal/792903/scalable.pdf). *Traitement Automatique des Langues*, 46:2, pp. 39-63.
 
-MBLM is a re-implementation of WOPR, a C++ version of a TiMBL-based word predictor developed by Peter Berck,
+*Olifant* is a re-implementation of WOPR, a C++ version of a TiMBL-based word predictor developed by Peter Berck,
 funded under the NWO Vici project "Memory Models of Language" (2006-2011) awarded to
 Antal van den Bosch. Peter Berck wrote a [PhD thesis](https://repository.ubn.ru.nl/bitstream/handle/2066/168708/168708.pdf?sequence=1) on the topic. 
 Later, work on memory-based word prediction was
