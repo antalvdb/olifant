@@ -4,7 +4,6 @@ import time
 import argparse
 import sys
 
-#sys.path.append('timbl-python')
 import timbl
 
 # Global verbosity level
@@ -25,7 +24,7 @@ def pad_prompt(words, max_len=16):
         words = words[-max_len:]
     return words
 
-def generate_text_from_api(classifier, initial_prompt, max_words=200):
+def generate_text_from_api(tokenizer, classifier, initial_prompt, max_words=200):
     # Tokenize the initial prompt and convert tokens back to words
     initial_tokens = tokenizer.tokenize(initial_prompt)
     
@@ -88,7 +87,9 @@ def generate_text_from_api(classifier, initial_prompt, max_words=200):
     except Exception as e:
         log(f"Error: {e}", level=1)
 
-if __name__ == "__main__":
+def main():
+    global VERBOSITY
+
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Memory-based text generator")
     parser.add_argument("--classifier", type=str, required=True, help="Path to the Timbl classifier file")
@@ -119,4 +120,7 @@ if __name__ == "__main__":
             break
         
         # Pass the input to the classifier function
-        generate_text_from_api(classifier, user_input)
+        generate_text_from_api(tokenizer, classifier, user_input)
+
+if __name__ == "__main__":
+    main()

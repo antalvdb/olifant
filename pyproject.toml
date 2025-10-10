@@ -1,0 +1,39 @@
+[project]
+name = "olifant"
+version = "0.2.0"
+description = "Memory-based language modeling. Eco-friendly CPU-based LLMs"
+authors = [
+    {name = "Antal van den Bosch", email = "a.p.j.vandenbosch@uu.nl"}
+]
+maintainers = [
+    {name = "Antal van den Bosch", email = "a.p.j.vandenbosch@uu.nl"}
+]
+dynamic = ["dependencies"]
+readme = "README.md"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+]
+license = "Apache-2.0"
+requires-python = ">= 3.10"
+
+[project.urls]
+Repository = "https://github.com/antalvdb/olifant.git"
+
+[project.scripts]
+olifant-tok = "olifant.tok:main"
+olifant-continuous-windowing = "olifant.continuous_windowing:main"
+olifant-timbl-llm = "olifant.timbl_llm:main"
+olifant-timbl-llm-app = "olifant.timbl_llm_app:main"
+olifant-nextwordpredict = "olifant.nextwordpredict:main"
+
+[tool.setuptools]
+packages = [ "olifant" ]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[build-system]
+requires = ["setuptools >= 62.6"]
+build-backend = "setuptools.build_meta"
+
