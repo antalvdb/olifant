@@ -33,14 +33,16 @@ def process_file(input_filename):
 
     #print(f"Processed file saved as {output_filename}")
 
-if __name__ == "__main__":
+def main():
     if len(sys.argv) != 2:
-        print("Usage: python script.py <input_filename>")
+        print("Usage: olifant-tok <input_filename>")
         sys.exit(1)
 
     input_filename = sys.argv[1]
     process_file(input_filename)
 
+if __name__ == "__main__":
+    main()
 
 #with open('questions.txt', 'r') as file:
 #    lines = file.readlines()

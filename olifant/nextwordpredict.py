@@ -2,18 +2,12 @@ device = "cpu" # Set a default device for notebook execution
 
 import os
 import time
-import requests
-import numpy as np
 import torch
-import torch.nn as nn
 import timbl
-import mblm.mblm_model
 
 from tqdm import tqdm
-from torch.nn import functional as F
-from IPython import get_ipython
 from transformers import AutoTokenizer, AutoConfig
-from mblm.mblm_model import TimblHuggingFaceModel, log, pad_prompt, pad_prompt_tokenids, log_probs_from_logits, log
+from olifant.mblm_model import TimblHuggingFaceModel, log,  pad_prompt_tokenids, log
 from codecarbon import track_emissions
 
 def evaluate_mblm_next_word_prediction(model, tokenizer, text_filepath, device):
@@ -112,32 +106,35 @@ def evaluate_mblm_next_word_prediction(model, tokenizer, text_filepath, device):
 
     return accuracy, num_correct, num_total, predictions_per_second
 
-# Initialize the tokenizer
-print("Initializing tokenizer")
-tokenizer = AutoTokenizer.from_pretrained('bert-base-cased')
+def main():
+    # Initialize the tokenizer
+    print("Initializing tokenizer")
+    tokenizer = AutoTokenizer.from_pretrained('bert-base-cased')
 
-# Initialize the Timbl classifier
-print("Initializing classifier")
-classifier = timbl.TimblClassifier('edufineweb_train_000001-10k_tok.l16r0', '-a4 +D')
-classifier.load()
+    # Initialize the Timbl classifier
+    print("Initializing classifier")
+    classifier = timbl.TimblClassifier('edufineweb_train_000001-10k_tok.l16r0', '-a4 +D')
+    classifier.load()
 
-print("Loading config")
-config = AutoConfig.from_pretrained("antalvdb/mblm-chatbot-instruction-prompts-igtree")
-tokenizer.add_special_tokens({'pad_token': '_'})
-tokenizer.pad_token = "_"
+    print("Loading config")
+    config = AutoConfig.from_pretrained("antalvdb/mblm-chatbot-instruction-prompts-igtree")
+    tokenizer.add_special_tokens({'pad_token': '_'})
+    tokenizer.pad_token = "_"
 
-# Initialize the TimblHuggingFaceModel
-model = TimblHuggingFaceModel(config, classifier, tokenizer)
+    @track_emissions(project_name="edufineweb_val")
+    def test_model():
+        accuracy, num_correct, num_total, predictions_per_second = evaluate_mblm_next_word_prediction(model, tokenizer, text_filepath, device)
+        return accuracy, num_correct, num_total, predictions_per_second
 
-# Specify your raw untokenized text file used for testing
-text_filepath = "edufineweb_val_000000-10k.txt"
-
-@track_emissions(project_name="edufineweb_val")
-def test_model():
-    accuracy, num_correct, num_total, predictions_per_second = evaluate_mblm_next_word_prediction(model, tokenizer, text_filepath, device)
-    return accuracy, num_correct, num_total, predictions_per_second
-    
-if __name__ == "__main__":
     accuracy, num_correct, num_total, predictions_per_second = test_model()
     print(f"\n\nNext-token prediction accuracy: {accuracy} ({num_correct} out of {num_total})")
     print(f"Token predictions per second: {predictions_per_second:.2f}")
+
+    # Initialize the TimblHuggingFaceModel
+    model = TimblHuggingFaceModel(config, classifier, tokenizer)
+
+    # Specify your raw untokenized text file used for testing
+    text_filepath = "edufineweb_val_000000-10k.txt"
+    
+if __name__ == "__main__":
+    main()

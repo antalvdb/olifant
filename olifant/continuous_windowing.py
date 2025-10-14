@@ -37,11 +37,14 @@ def generate_windowed_instances(file_path, window_size=16):
                 target = padded_text[i]
                 print(f"{' '.join(context)} {target}")
 
-# Check if the filename argument is provided
-if __name__ == "__main__":
+def main():
     if len(sys.argv) != 2:
-        print("Usage: python continuous-tok.py <filename>")
+        print("Usage: olifant-continuous-windowing <filename>")
     else:
         file_path = sys.argv[1]
         generate_windowed_instances(file_path)
+
+# Check if the filename argument is provided
+if __name__ == "__main__":
+    main()
 

@@ -1,0 +1,7 @@
+transformers
+python3-timbl
+pandas
+numpy
+torch
+codecarbon
+flask

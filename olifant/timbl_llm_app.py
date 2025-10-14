@@ -4,8 +4,6 @@ from transformers import AutoTokenizer
 import re
 import time
 import threading
-import argparse # You may not need argparse for a web app, but keep it if it's part of your logic
-import sys      # You may not need sys for a web app
 
 # Load the tokenizer (move outside the function for efficiency)
 tokenizer = AutoTokenizer.from_pretrained('gpt2')
@@ -217,6 +215,9 @@ def index():
 
     return render_template_string(HTML_TEMPLATE, generated_text=generated_text)
 
+def main():
+    app.run(host='0.0.0.0', port=8001, debug=True) # debug=True is good for development
+
 # This part is crucial for running the app when the file is executed
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8001, debug=True) # debug=True is good for development
+    main()

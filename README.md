@@ -13,19 +13,29 @@ approximation of k-nearest neighbor classification.
 
 ## Installation
 
-*Olifant* relies on [python3-timbl](https://github.com/proycon/python-timbl) and the [TiMBL](https://github.com/LanguageMachines/timbl/) memory-based classification engine.
+Download and install via pip:
 
-For training, the command-line version of TiMBL is required. Install TiMBL on Debian/Ubuntu systems with
+``% pip install olifant``
 
-``% apt install timbl``
+Alternatively, for the latest development version, clone this repository and run ``pip install .``.
+
+This will automatically pull in and install the Python bindings to TiMBL, [python3-timbl](https://github.com/proycon/python-timbl) (wheels are available for Python versions 3.10, 3.11, and 3.12 on systems with glibc 2.28 or higher; on macOS, installation only works with Python 3.13 currently):
+
+*Olifant* also relies on the command-line version of [TiMBL](https://github.com/LanguageMachines/timbl/) memory-based classification engine for training. 
+
+Install TiMBL on Debian/Ubuntu systems with
+
+``$ sudo apt install timbl``
+
+On Alpine Linux:
+
+``# apk add timbl``
 
 On macOS with brew, invoke
 
 ``% brew install timbl``
 
-Next, for inference, install the Python bindings to TiMBL, [python3-timbl](https://github.com/proycon/python-timbl), with pip (wheels are available for Python versions 3.10, 3.11, and 3.12 on systems with glibc 2.28 or higher; on macOS, installation only works with Python 3.13 currently):
-
-``% pip install python3-timbl``
+**Note:** Windows is not supported
 
 ## Usage
 
@@ -35,13 +45,13 @@ Training *Olifant* assumes that you have a tokenizer and a raw-text training set
 First, the text is tokenized using `bert-base-cased` (a standard LLM tokenizer from Hugging Face; we will need to use the same tokenizer in later steps).
 Edit `tok.py` if you want to use a different tokenizer.
 
-``% python3 tok.py textfile``
+``% olifant-tok textfile``
 
 This creates a file `textfile_tok` which then needs to be converted to a fixed-width instance base to make it suitable training data for TiMBL.
 The example works with an input buffer of 16 tokens, which in current LLM terms is a very small input buffer. 
 At inference time, however, single instances are incrementally stored in memory, becoming available for the next steps in inference in the internal "long-term" memory of the memory-based classifier.
 
-``% python3 continuous-windowing.py textfile_tok 4 > textfile_tok.l4r0``
+``% olifant-continuous-windowing textfile_tok 4 > textfile_tok.l4r0``
 
 This creates `textfile_tok.l4r0`, creating 4-token windowed instances with the next token as the label to be classified and all previous tokens as context.
 Empty lines in the original tokenized text signify the reset of the context window (padded with "_").
@@ -73,7 +83,7 @@ This also offers a way to do stepwise training with segments of training data un
 
 Simple GPT-style text completion can be invoked by issuing
 
-``% python3 timbl-llm.py --classifier textfile-finetune_tok.l4r0 --tokenizer bert-base-cased --timbl_args '-a4 +D' --verbosity 3``
+``% olifant-timbl-llm --classifier textfile-finetune_tok.l4r0 --tokenizer bert-base-cased --timbl_args '-a4 +D' --verbosity 3``
 
 This call assumes the presence of `textfile-finetune_tok.l4r0.ibase`. The arguments passed to the TiMBL engine are '-a4 +D', 
 invoking the so-called TRIBL2 k-NN approximation, a relatively fast approximation of *k*-nearest neighbor classification. See the [TiMBL reference guide](https://github.com/LanguageMachines/timbl/blob/master/docs/Timbl_6.4_Manual.pdf) 
@@ -87,7 +97,7 @@ Be sure to adjust the way you load your `.ibase` model file.
 
 ### Inference, Hugging Face style
 
-In this Jupyter Notebook you see how MBLM can be run Hugging
+In this Jupyter Notebook you see how Olifant can be run Hugging
 Face style:
 
 ``% jupyter notebook timbl-llm-hf.ipynb``
