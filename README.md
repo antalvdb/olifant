@@ -43,13 +43,12 @@ On macOS with brew, invoke
 
 Training *Olifant* assumes that you have a tokenizer and a raw-text training set `textfile`. The tokenizer will have to be the same tokenizer used for testing.
 First, the text is tokenized using `bert-base-cased` (a standard LLM tokenizer from Hugging Face; we will need to use the same tokenizer in later steps).
-Edit `tok.py` if you want to use a different tokenizer.
+Edit `olifant-tok.py` if you want to use a different tokenizer.
 
 ``% olifant-tok textfile``
 
 This creates a file `textfile_tok` which then needs to be converted to a fixed-width instance base to make it suitable training data for TiMBL.
-The example works with an input buffer of 16 tokens, which in current LLM terms is a very small input buffer. 
-At inference time, however, single instances are incrementally stored in memory, becoming available for the next steps in inference in the internal "long-term" memory of the memory-based classifier.
+The example works with an input buffer of 4 tokens, which in current LLM terms is an extremely small input buffer. 
 
 ``% olifant-continuous-windowing textfile_tok 4 > textfile_tok.l4r0``
 
