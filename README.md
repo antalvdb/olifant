@@ -45,12 +45,12 @@ Training *Olifant* assumes that you have a tokenizer and a raw-text training set
 First, the text is tokenized using `bert-base-cased` (a standard LLM tokenizer from Hugging Face; we will need to use the same tokenizer in later steps).
 Edit `tok.py` if you want to use a different tokenizer.
 
-``% tok textfile``
+``% olifant-tok textfile``
 
 This creates a file `textfile_tok` which then needs to be converted to a fixed-width instance base to make it suitable training data for TiMBL.
 The example works with an input buffer of 4 tokens, which in current LLM terms is an extremely small input buffer. 
 
-``% continuous-windowing textfile_tok 4 > textfile_tok.l4r0``
+``% olifant-continuous-windowing textfile_tok 4 > textfile_tok.l4r0``
 
 This creates `textfile_tok.l4r0`, creating 4-token windowed instances with the next fifth token as the label to be classified and all previous tokens as context.
 Empty lines in the original tokenized text signify the reset of the context window (padded with "_").
