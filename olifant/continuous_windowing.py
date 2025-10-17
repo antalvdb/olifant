@@ -1,6 +1,6 @@
 import sys
 
-def generate_windowed_instances(file_path, window_size=16):
+def generate_windowed_instances(file_path, window_size):
     # Start with an empty list to accumulate tokens for each block
     tokenized_text = []
     
@@ -38,11 +38,12 @@ def generate_windowed_instances(file_path, window_size=16):
                 print(f"{' '.join(context)} {target}")
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: olifant-continuous-windowing <filename>")
+    if len(sys.argv) != 3:
+        print("Usage: olifant-continuous-windowing <filename> <window size>")
     else:
         file_path = sys.argv[1]
-        generate_windowed_instances(file_path)
+        window_size = int(sys.argv[2])
+        generate_windowed_instances(file_path, window_size)
 
 # Check if the filename argument is provided
 if __name__ == "__main__":
