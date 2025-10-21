@@ -18,7 +18,7 @@ def process_file(input_filename):
     #print(df.head())
 
     # Initialize the tokenizer
-    tokenizer = AutoTokenizer.from_pretrained('GroNLP/bert-base-dutch-cased')
+    tokenizer = AutoTokenizer.from_pretrained('gpt2')
 
     # Tokenize the text
     df['tokens'] = df['text'].apply(lambda x: tokenizer.tokenize(x))
