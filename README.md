@@ -5,7 +5,7 @@ This repository contains instructions and code to install, train and run memory-
 Looking for an LLM that is relatively eco-friendly? *Olifant* models have a number of interesting properties:
 
 * Learning is scalable, and incremental. Model performance increases approximately log-linearly with more data, or better; model size scales linearly;
-* Consistently low CO~2~ emissions during training and inference. *Olifant* runs on CPUs. Training with *Olifant* is estimated to cause in the order of 1,000 times fewer CO~2~ emissions than neural LM training. Inference costs are 10-100 times lower;
+* Consistently low CO2 emissions during training and inference. *Olifant* runs on CPUs. Training with *Olifant* is estimated to cause in the order of 1,000 times fewer CO2 emissions than neural LM training. Inference costs are 10-100 times lower;
 * Fully transparent functioning. TRIBL2 offers nearest-neighbor-based explanations for predictions, based on individual examples used for prediction. Nearest neighbors can even be source-tagged for full provenance;
 * Intentional memorization of training data. Depending on context size settings, {\sc olifant} models can recite the majority of tokens from their training data faithfully.
 
