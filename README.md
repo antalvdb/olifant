@@ -2,7 +2,7 @@
 
 This repository contains instructions and code to install, train and run memory-based LLMs. 
 
-Looking for an LLM that is relatively eco-friendly? *Olifant* models have a number of distinct advantages over neural LLMs:
+Looking for an LLM that is relatively eco-friendly? *Olifant* models have a number of interesting properties:
 
 * Learning is scalable, and incremental. Model performance increases approximately log-linearly with more data, or better; model size scales linearly;
 * Consistently low CO2 emissions during training and inference. *Olifant* runs on CPUs. Training with *Olifant* is estimated to cause in the order of 1,000 times fewer CO2 emissions than neural LM training. Inference costs are 10-100 times lower;
