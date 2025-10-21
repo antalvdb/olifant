@@ -42,7 +42,7 @@ On macOS with brew, invoke
 ### Tokenization
 
 Training *Olifant* assumes that you have a tokenizer and a raw-text training set `textfile`. The tokenizer will have to be the same tokenizer used for testing.
-First, the text is tokenized using `bert-base-cased` (a standard LLM tokenizer from Hugging Face; we will need to use the same tokenizer in later steps).
+First, the text is tokenized using `gpt2` (a standard LLM tokenizer from Hugging Face; we will need to use the same tokenizer in later steps).
 Edit `tok.py` if you want to use a different tokenizer.
 
 ``% olifant-tok textfile``
