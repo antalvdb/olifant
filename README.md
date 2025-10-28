@@ -128,6 +128,10 @@ group at Antwerp University, Belgium, and the Centre for Language and Speech Tec
 the Netherlands. Core developer of TiMBL is Ko van der Sloot. Other contributors were Walter Daelemans, Antal van den Bosch, Jakub Zavrel, Peter Berck,
 Maarten van Gompel, and many more people credited fully in the [TiMBL reference guide](https://github.com/LanguageMachines/timbl/blob/master/docs/Timbl_6.4_Manual.pdf).
 
+If you want to cite our work, cite this paper:
+
+> Van den Bosch, A., Risco Patón, A., Buijse, T., Berck, P, and Van Gompel, M. (2025). [Memory-based Language Models: An Efficient, Explainable, and Eco-friendly Approach to Large Language Modeling](https://arxiv.org/abs/2510.22317). arxiv:2510.22317.
+
 Memory-based language modeling was first described in
 
 > Van den Bosch, A. (2005). [Scalable classification-based word prediction and confusible correction](https://pure.uvt.nl/ws/portalfiles/portal/792903/scalable.pdf). *Traitement Automatique des Langues*, 46:2, pp. 39-63.
