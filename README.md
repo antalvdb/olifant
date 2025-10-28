@@ -60,7 +60,7 @@ Empty lines in the original tokenized text signify the reset of the context wind
 
 Training can then be invoked by calling TiMBL. This can take a while and may consume high amounts of RAM.
 
-``% timbl -f textfile_tok.l4r0 -a0 +D -I textfile_tok.l4r0.ibase``
+``% timbl -f textfile_tok.l4r0 -a0 -I textfile_tok.l4r0.ibase``
 
 The end result is `textfile_tok.l4r0.ibase`, an indexed and compressed instance base suitable for TiMBL classification. In LLM terms, this is the model file
 that you will need for your favorite LLM inference steps.
