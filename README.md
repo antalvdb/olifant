@@ -83,9 +83,9 @@ This also offers a way to do stepwise training with segments of training data un
 
 Simple GPT-style text completion can be invoked by issuing
 
-``% olifant-timbl-llm --classifier textfile-finetune_tok.l4r0 --tokenizer bert-base-cased --timbl_args '-a4 +D' --verbosity 3``
+``% olifant-timbl-llm --classifier textfile-finetune_tok.l4r0 --tokenizer gpt2 --timbl_args '-a4' --verbosity 3``
 
-This call assumes the presence of `textfile-finetune_tok.l4r0.ibase`. The arguments passed to the TiMBL engine are '-a4 +D', 
+This call assumes the presence of `textfile-finetune_tok.l4r0.ibase`. The argument passed to the TiMBL engine is '-a4', 
 invoking the so-called TRIBL2 k-NN approximation, a relatively fast approximation of *k*-nearest neighbor classification. See the [TiMBL reference guide](https://github.com/LanguageMachines/timbl/blob/master/docs/Timbl_6.4_Manual.pdf) 
 for all possible algorithmic variants (-a), the important k parameter (set to 1 by default), and many more options.
 
