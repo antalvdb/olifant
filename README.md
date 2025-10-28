@@ -76,7 +76,7 @@ have tokenized and windowed a new training set `finetune_tok.l4r0`:
 
 ``% timbl -a0 +D -i textfile_tok.l4r0.ibase -f finetune_tok.l4r0 -I textfile-finetune_tok.l4r0.ibase``
 
-Choose your own naming conventions to keep track of trained and finetuned `ibase` model files. Any `ibase` file can be the starting point for further finetuning.
+Choose your own naming conventions to keep track of trained and finetuned `ibase` model files. Any `ibase` file created with the `-a0` or `-a4` algorithm options can be the starting point for further finetuning.
 This also offers a way to do stepwise training with segments of training data under limited RAM conditions.
 
 ### Inference
