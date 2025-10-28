@@ -7,7 +7,7 @@ Looking for an LLM that is relatively eco-friendly? *Olifant* models have a numb
 * **Learning is scalable**, and incremental (allowing checkpointing). Model performance increases approximately log-linearly with more data; model size, learning time and RAM usage co-scale linearly with more data;
 * **Consistently low CO2 emissions during training and inference**. *Olifant* runs on CPUs. Training with *Olifant* is estimated to cause in the order of 1,000 times fewer CO2 emissions than neural LM training. Inference costs are 10-100 times lower;
 * **Fully transparent functioning**. *Olifant* offers nearest-neighbor-based explanations for predictions, based on individual examples. Nearest neighbors can be source-tagged for full provenance;
-* **Intentional memorization of training data**. Depending on context size settings, {\sc olifant} models can recite the majority of tokens from their training data faithfully.
+* **Intentional memorization of training data**. Depending on context size settings, *Olifant* models can recite the majority of tokens from their training data faithfully.
 
 *Olifant* is our implementation of memory-based language modeling; it is the Dutch word for elephant. To quote [Wikipedia](https://en.wikipedia.org/wiki/Elephant_cognition), "Most contemporary ethologists view the elephant as one of the world's most intelligent animals. Elephants manifest a wide variety of behaviors, including those associated with grief, learning, mimicry, playing, altruism, tool use, compassion, cooperation, self-awareness, memory, and communication."
 
