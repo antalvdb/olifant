@@ -199,11 +199,10 @@ class TimblHuggingFaceModel(PreTrainedModel):
             padded_instances.append((instance, initial_tokens[i] if i < len(initial_tokens) else '_'))
 
         # Add instances to memory
-        for input_instance, next_token in padded_instances:
-            log(f"memorized from prompt: {input_instance} {next_token}", level=2)
-            self.timbl_classifier.append(input_instance, next_token)
+        # for input_instance, next_token in padded_instances:
+        #     log(f"memorized from prompt: {input_instance} {next_token}", level=2)
+        #     self.timbl_classifier.append(input_instance, next_token)
 
-        
         with torch.no_grad():
              for _ in range(max_new_tokens):
 
