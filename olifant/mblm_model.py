@@ -79,10 +79,11 @@ class TimblHuggingFaceModel(PreTrainedModel):
                 log_probs = log_probs_from_logits(next_token_logits.unsqueeze(0), next_token_id.squeeze(0).unsqueeze(0))
                 log(f"sequence_logprob: log_probs: {log_probs}", level = 3)
 
-                # Check if the log probability is -inf and skip if it is, log a warning
+                # Check if the log probability is -inf and apply penalty if it is
                 if np.isinf(log_probs.cpu().numpy()):
-                    log(f"Warning: log probability is -inf for token index: {i}, skipping.", level = 3)
-
+                    penalty = -1000.0
+                    log(f"Warning: log probability is -inf for token index: {i}, applying penalty {penalty}.", level = 3)
+                    seq_log_prob.append(penalty)
                 else:
                     seq_log_prob.append(log_probs.cpu().numpy().item()) # Append the log probability as a scalar
                     log(f"sequence_logprob: log_probs added: {log_probs}", level = 3)
